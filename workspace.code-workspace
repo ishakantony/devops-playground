@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "playbook"
+		},
+		{
+			"path": "apps/simple-logger"
+		},
+		{
+			"path": "apps/dummy-api"
+		}
+	]
+}
