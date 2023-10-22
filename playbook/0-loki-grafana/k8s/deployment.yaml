@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: simple-logger
+  name: simple-logger
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: simple-logger
+  template:
+    metadata:
+      labels:
+        app: simple-logger
+    spec:
+      containers:
+      - image: ishakantony/simple-logger:latest
+        name: simple-logger
