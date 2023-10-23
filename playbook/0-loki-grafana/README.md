@@ -9,7 +9,11 @@ There's a simple logger app setup to simulate adding logs.
 ### Requirement
 
 - Install [Terraform](https://www.terraform.io/)
-- Have a Kubernetes cluster ready
+- Have a Kubernetes cluster ready (I like to use [kind](https://kind.sigs.k8s.io/))
+
+### Steps (Kind Kubernetes Cluster)
+
+1. Run `kind create cluster`
 
 ### Steps (Base)
 

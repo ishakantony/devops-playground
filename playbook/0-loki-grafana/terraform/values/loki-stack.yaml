@@ -28,6 +28,29 @@ promtail:
     serverPort: 3101
     clients:
       - url: http://{{ .Release.Name }}:3100/loki/api/v1/push
+    snippets:
+      pipelineStages:
+        - cri:
+        - match:
+            pipeline_name: simple-logger
+            selector: '{app="simple-logger"}'
+            stages:
+              - json:
+                  expressions:
+                    level: level
+                    message: msg
+                    time: time
+              - labels:
+                  level:
+              - timestamp:
+                  source: time
+                  format: RFC3339Nano
+              - output:
+                  source: message
 
 grafana:
   enabled: true
+  adminUser: admin
+  adminPassword: admin123
+  image:
+    tag: 10.1.5
