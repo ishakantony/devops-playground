@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "apps/dummy-api"
+		},
+		{
+			"path": "apps/ms-catalog"
 		}
 	]
 }
