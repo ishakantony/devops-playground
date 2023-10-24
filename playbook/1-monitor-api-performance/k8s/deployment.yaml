@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: dummy-api
+  name: dummy-api
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dummy-api
+  template:
+    metadata:
+      labels:
+        app: dummy-api
+    spec:
+      containers:
+      - image: ishakantony/dummy-api:v1
+        name: dummy-api
+        ports:
+          - name: dummy-api
+            containerPort: 10000
+            protocol: TCP
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+          requests:
+            memory: "64Mi"
+            cpu: "125m"
