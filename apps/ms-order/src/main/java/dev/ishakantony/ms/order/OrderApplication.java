@@ -113,10 +113,12 @@ public class OrderApplication {
             int stock = inventory.findStockByProductId(newOrder.productId());
 
             if (stock == 0) {
+                log.error("There's no stock for product: [{}], the client must validate stock exist before making an order.", newOrder.productId());
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error("Out of stock"));
             }
 
             if (stock < newOrder.quantity()) {
+                log.error("Not enough stock for product: [{}], this can be because the stock depleted after the client checks for it", newOrder.productId());
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error("Not enough stock"));
             }
 
