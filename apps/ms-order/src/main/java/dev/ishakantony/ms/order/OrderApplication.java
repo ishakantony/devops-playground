@@ -19,11 +19,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
@@ -39,7 +37,8 @@ public class OrderApplication {
     record OrderCreated(Integer orderId) {
     }
 
-    record Error(String message) { }
+    record Error(String message) {
+    }
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -113,19 +112,26 @@ public class OrderApplication {
             int stock = inventory.findStockByProductId(newOrder.productId());
 
             if (stock == 0) {
-                log.error("There's no stock for product: [{}], the client must validate stock exist before making an order.", newOrder.productId());
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error("Out of stock"));
+                log.error(
+                    "There's no stock for product: [{}], the client must validate stock exist before making an order.",
+                    newOrder.productId());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new Error("Out of stock"));
             }
 
             if (stock < newOrder.quantity()) {
-                log.error("Not enough stock for product: [{}], this can be because the stock depleted after the client checks for it", newOrder.productId());
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error("Not enough stock"));
+                log.error(
+                    "Not enough stock for product: [{}], this can be because the stock depleted after the client checks for it",
+                    newOrder.productId());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new Error("Not enough stock"));
             }
 
             Order newOrderCreated = repository.save(new Order(newOrder.productId(),
                 newOrder.quantity()));
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(new OrderCreated(newOrderCreated.getId()));
+            return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new OrderCreated(newOrderCreated.getId()));
         }
 
     }
