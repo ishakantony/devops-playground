@@ -76,7 +76,7 @@ public class OrderApplication {
         public InventoryService(RestTemplateBuilder restTemplateBuilder, Environment environment) {
             this.restTemplate = restTemplateBuilder.build();
             this.baseUrl =
-                environment.getProperty("INVENTORY_SERVICE_BASE_URL", "http://localhost:8082");
+                environment.getProperty("INVENTORY_SERVICE_BASE_URL", "http://localhost:8083");
         }
 
         public Integer findStockByProductId(int productId) {

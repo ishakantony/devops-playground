@@ -1,17 +1,33 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/inventory
-    username: postgres
-    password: password
-    driver-class-name: org.postgresql.Driver
+  application:
+    name: inventory
   jpa:
     hibernate:
       ddl-auto: update
-    properties:
-      dialect: org.hibernate.dialect.PostgreSQLDialect
-  sql:
-    init:
-      schema-locations: classpath:data.sql
+    open-in-view: false
+  datasource:
+    username: inventory
+    password: inventory123
+    url: jdbc:postgresql://localhost:9083/inventory
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            request: true
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
 
 server:
-  port: 8082
+  port: 8083

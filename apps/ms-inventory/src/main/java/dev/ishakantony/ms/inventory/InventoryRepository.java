@@ -1,9 +1,11 @@
 package dev.ishakantony.ms.inventory;
 
+import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface InventoryRepository extends CrudRepository<InventoryApplication.Inventory, Integer> {
+public interface InventoryRepository
+    extends CrudRepository<InventoryApplication.Inventory, Integer> {
+
+    Optional<InventoryApplication.Inventory> findByProductId(Integer productId);
 
 }

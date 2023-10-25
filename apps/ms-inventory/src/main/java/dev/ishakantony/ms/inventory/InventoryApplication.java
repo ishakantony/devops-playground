@@ -1,57 +1,81 @@
 package dev.ishakantony.ms.inventory;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
-@ComponentScan(basePackages = "dev.ishakantony.ms.inventory")
 public class InventoryApplication {
 
     public static void main(String[] args) {
-		SpringApplication.run(InventoryApplication.class, args);
-	}
+        SpringApplication.run(InventoryApplication.class, args);
+    }
 
-    @Autowired
-    public InventoryRepository inventoryRepository;
+    @Bean
+    CommandLineRunner seedDb(InventoryRepository repository) {
+        return args -> {
+            if (repository.count() == 0) {
+                repository.save(new Inventory(1,10));
+            }
+        };
+    }
 
     @Entity
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    @Table(name = "inventory")
     public static class Inventory {
+
+        public Inventory(Integer productId, Integer stock) {
+            this.productId = productId;
+            this.stock = stock;
+        }
+
+        @JsonIgnore
         @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Integer id;
+
+        private Integer productId;
+
         private Integer stock;
+
     }
 
+    @Slf4j
     @RestController
-    class HelloController {
+    @RequiredArgsConstructor
+    static class HelloController {
 
-        private static final Logger log = LoggerFactory.getLogger(HelloController.class);
-        @GetMapping("/stocks/by-product-id/{id}")
-        public Inventory products(@PathVariable int id) {
-            if(inventoryRepository.findById(id).isPresent()){
+        private final InventoryRepository inventoryRepository;
+
+        @GetMapping("/stocks/by-product-id/{productId}")
+        public Inventory products(@PathVariable int productId) {
+
+            Optional<Inventory> inventoryOptional = inventoryRepository.findByProductId(productId);
+
+            if (inventoryOptional.isPresent()) {
                 log.info("product is exist in database");
-                return inventoryRepository.findById(id).get();
+                return inventoryOptional.get();
             }
 
             log.info("product is NOT exist in database");
-            return new Inventory(id,0);
+            return new Inventory(productId, 0);
         }
 
     }

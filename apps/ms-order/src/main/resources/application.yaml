@@ -11,7 +11,7 @@ spring:
       minimum-idle: ${HIKARI_MIN_IDLE:10}
     username: order
     password: order123
-    url: jdbc:postgresql://localhost:5432/order
+    url: jdbc:postgresql://localhost:9082/order
 
 management:
   tracing:
@@ -31,3 +31,6 @@ management:
 logging:
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+
+server:
+  port: 8082
