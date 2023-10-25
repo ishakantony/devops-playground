@@ -47,9 +47,15 @@
 			<artifactId>micrometer-tracing-bridge-otel</artifactId>
 		</dependency>
 		<!-- Exporter -->
+		<!-- Zipkin -->
+<!--		<dependency>-->
+<!--			<groupId>io.opentelemetry</groupId>-->
+<!--			<artifactId>opentelemetry-exporter-zipkin</artifactId>-->
+<!--		</dependency>-->
+		<!-- OTel -->
 		<dependency>
 			<groupId>io.opentelemetry</groupId>
-			<artifactId>opentelemetry-exporter-zipkin</artifactId>
+			<artifactId>opentelemetry-exporter-otlp</artifactId>
 		</dependency>
 
 		<!-- Helpers -->

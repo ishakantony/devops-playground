@@ -10,9 +10,11 @@ services:
     networks:
       - ms
     depends_on:
-      - zipkin
+      # - zipkin
+      - jaeger
     environment:
-      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - MANAGEMENT_OTLP_METRICS_EXPORT_URL=http://jaeger:4318/v1/metrics
+      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://jaeger:4318/v1/traces
 
   order:
     build:
@@ -24,13 +26,14 @@ services:
       - ms
     depends_on:
       - order-db
-      - zipkin
+      - jaeger
     environment:
       - SPRING_DATASOURCE_USERNAME=order
       - SPRING_DATASOURCE_PASSWORD=order123
       - SPRING_DATASOURCE_URL=jdbc:postgresql://order-db:5432/order
       - INVENTORY_SERVICE_BASE_URL=http://inventory:8080
-      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - MANAGEMENT_OTLP_METRICS_EXPORT_URL=http://jaeger:4318/v1/metrics
+      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://jaeger:4318/v1/traces
 
   inventory:
     build:
@@ -42,12 +45,13 @@ services:
       - ms
     depends_on:
       - inventory-db
-      - zipkin
+      - jaeger
     environment:
       - SPRING_DATASOURCE_USERNAME=inventory
       - SPRING_DATASOURCE_PASSWORD=inventory123
       - SPRING_DATASOURCE_URL=jdbc:postgresql://inventory-db:5432/inventory
-      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - MANAGEMENT_OTLP_METRICS_EXPORT_URL=http://jaeger:4318/v1/metrics
+      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://jaeger:4318/v1/traces
 
   order-db:
     image: postgres:latest
@@ -71,10 +75,13 @@ services:
     volumes:
       - inventory-db-data:/var/lib/postgresql/data
 
-  zipkin:
-    image: openzipkin/zipkin
+  jaeger:
+    image: jaegertracing/all-in-one:latest
     ports:
-      - 9411:9411
+      - "16686:16686"
+      - "4318:4318"
+    environment:
+      - LOG_LEVEL=debug
     networks:
       - ms
 
