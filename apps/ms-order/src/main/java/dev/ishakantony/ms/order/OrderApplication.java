@@ -116,6 +116,10 @@ public class OrderApplication {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error("Out of stock"));
             }
 
+            if (stock < newOrder.quantity()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error("Not enough stock"));
+            }
+
             Order newOrderCreated = repository.save(new Order(newOrder.productId(),
                 newOrder.quantity()));
 
