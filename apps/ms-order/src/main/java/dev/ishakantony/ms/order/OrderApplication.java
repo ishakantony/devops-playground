@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,6 +45,7 @@ public class OrderApplication {
     @NoArgsConstructor
     @Entity
     @Getter
+    @Table(name = "orders")
     static class Order {
 
         public Order(Integer productId, Integer quantity) {

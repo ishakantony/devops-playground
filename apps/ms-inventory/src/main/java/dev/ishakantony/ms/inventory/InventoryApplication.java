@@ -5,11 +5,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.util.Optional;
+import java.util.Random;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -30,16 +33,23 @@ public class InventoryApplication {
     CommandLineRunner seedDb(InventoryRepository repository) {
         return args -> {
             if (repository.count() == 0) {
-                repository.save(new Inventory(1,10));
+                Random random = new Random();
+                for (int i = 1; i <= 50; i++) {
+                    int quantity = random.nextInt(100) +
+                        1; // Random quantity between 1 and 100 (adjust as needed).
+                    repository.save(new Inventory(i, quantity));
+                }
             }
         };
     }
 
     @Entity
-    @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Inventory {
+    @Getter
+    @Setter
+    @Table(name = "inventory")
+    static class Inventory {
 
         public Inventory(Integer productId, Integer stock) {
             this.productId = productId;
