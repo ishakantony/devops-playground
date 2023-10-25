@@ -15,9 +15,10 @@ ARG DEPENDENCY=/workspace/app/target/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java","-cp","app:app/lib/*","dev.ishakantony.springlogbook.SpringLogbookApplication"]
+ENTRYPOINT ["java","-cp","app:app/lib/*","dev.ishakantony.ms.inventory.InventoryApplication"]
 
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring
 
+ENV SERVER_PORT=8080
 EXPOSE 8080

@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  catalog:
+    build:
+      dockerfile: ../../apps/ms-catalog/Dockerfile
+      context: ../../apps/ms-catalog
+    ports:
+      - "8081:8080"
+    networks:
+      - ms
+    depends_on:
+      - zipkin
+    environment:
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+
+  order:
+    build:
+      dockerfile: ../../apps/ms-order/Dockerfile
+      context: ../../apps/ms-order
+    ports:
+      - "8082:8080"
+    networks:
+      - ms
+    depends_on:
+      - order-db
+      - zipkin
+    environment:
+      - SPRING_DATASOURCE_USERNAME=order
+      - SPRING_DATASOURCE_PASSWORD=order123
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://order-db:5432/order
+      - INVENTORY_SERVICE_BASE_URL=http://inventory:8080
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+
+  inventory:
+    build:
+      dockerfile: ../../apps/ms-inventory/Dockerfile
+      context: ../../apps/ms-inventory
+    ports:
+      - "8083:8080"
+    networks:
+      - ms
+    depends_on:
+      - inventory-db
+      - zipkin
+    environment:
+      - SPRING_DATASOURCE_USERNAME=inventory
+      - SPRING_DATASOURCE_PASSWORD=inventory123
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://inventory-db:5432/inventory
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+
+  order-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: order
+      POSTGRES_PASSWORD: order123
+      POSTGRES_DB: order
+    networks:
+      - ms
+    volumes:
+      - order-db-data:/var/lib/postgresql/data
+
+  inventory-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: inventory
+      POSTGRES_PASSWORD: inventory123
+      POSTGRES_DB: inventory
+    networks:
+      - ms
+    volumes:
+      - inventory-db-data:/var/lib/postgresql/data
+
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
+    networks:
+      - ms
+
+networks:
+  ms:
+
+volumes:
+  order-db-data:
+  inventory-db-data:
