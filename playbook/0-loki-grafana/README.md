@@ -6,6 +6,11 @@ There's a simple logger app setup to simulate adding logs.
 
 ## How to run this?
 
+### TLDR
+1. run `./setup.sh` to complete initial setup
+2. run `./play.sh` to get Grafana password and open the Grafana
+3. run `./destroy.sh` after you are done playing
+
 ### Requirement
 
 - Install [Terraform](https://www.terraform.io/)
